@@ -49,6 +49,7 @@ std::string status_topic;
 std::string co2_topic;
 
 Sensor *sensor;
+bool hasCO2;
 
 // Main loop timer callback
 static void
@@ -71,20 +72,50 @@ timer_cb(void *)
     len = snprintf(buffer, 50, "%f", humidity);
     mgos_mqtt_pub(humidity_topic.c_str(), buffer, len, 1, 0);
     // co2
-    len = snprintf(buffer, 50, "%i", co2);
-    mgos_mqtt_pub(co2_topic.c_str(), buffer, len, 1, 0);
+    if (hasCO2)
+    {
+      len = snprintf(buffer, 50, "%i", co2);
+      mgos_mqtt_pub(co2_topic.c_str(), buffer, len, 1, 0);
+    }
 
     // Publish state to MQTT
     mgos_mqtt_pub(status_topic.c_str(), "ONLINE", 6, 1, 0);
 
     // Log and blink
+    if (hasCO2)
+    {
+      LOG(LL_INFO, ("T: %.2f, H: %.2f, CO2: %i", temp_c, humidity, co2));
+    }
+    else
+    {
+      LOG(LL_INFO, ("T: %.2f, H: %.2f", temp_c, humidity));
+    }
     mgos_gpio_blink(LED_RED, update_millis - 50, 50);
-    LOG(LL_INFO, ("T: %.2f, H: %.2f", temp_c, humidity));
   }
 }
 
 enum mgos_app_init_result mgos_app_init(void)
 {
+  // Create sensor from configuration
+  std::string sensor_name = std::string(mgos_sys_config_get_sensor_type());
+  if (sensor_name == "HDC1080")
+  {
+    sensor = mgos_HDC1080_create();
+    hasCO2 = mgos_sys_config_get_sensor_HDC1080_hasCO2();
+    LOG(LL_INFO, ("Starting sensor %s", sensor_name.c_str()));
+  }
+  else if (sensor_name == "SCD30")
+  {
+    int refresh_secs = mgos_sys_config_get_sensor_SCD30_refreshIntervalSecs();
+    int pressure_mbars = mgos_sys_config_get_sensor_SCD30_defaultAmbientPressureMbar();
+    hasCO2 = mgos_sys_config_get_sensor_SCD30_hasCO2();
+    sensor = mgos_SCD30_create(refresh_secs, pressure_mbars);
+    LOG(LL_INFO, ("Starting sensor %s, refresh %i secs, pressure %i mbars", sensor_name.c_str(), refresh_secs, pressure_mbars));
+  }
+  else
+  {
+    LOG(LL_ERROR, ("Couldn't initialise sensor with name %s, check configuration.", sensor_name.c_str()));
+  }
 
   // Set up the red onboard LED to signal MQTT transfer
   mgos_gpio_set_mode(LED_RED, MGOS_GPIO_MODE_OUTPUT);
