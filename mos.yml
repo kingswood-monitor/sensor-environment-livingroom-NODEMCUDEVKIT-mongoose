@@ -4,9 +4,9 @@ version: 1.0
 
 name: KINGSWOOD_ENVIRONMENT_SENSOR
 
-libs_version: ${mos.version}
-modules_version: ${mos.version}
-mongoose_os_version: ${mos.version}
+# libs_version: ${mos.version}
+# modules_version: ${mos.version}
+# mongoose_os_version: ${mos.version}
 
 tags:
   - c
@@ -63,8 +63,6 @@ libs:
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/provision
   - origin: https://github.com/richardjlyon/arduino_closedcube_hdc1080
-    version: 1.1
   - origin: https://github.com/richardjlyon/arduino_sparkfun_scd30
-    version: 1.1
 
 manifest_version: 2017-09-29
