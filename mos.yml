@@ -33,6 +33,7 @@ config_schema:
   - ["i2c.scl_gpio", "i", 5, { title: "scl" }]
   - ["i2c.sda_gpio", "i", 4, { title: "sda" }]
   - ["sensor", "o", { title: "Sensor custom settings" }]
+  - ["sensor.type", "s", "SCD30", { title: "Sensor type (SCD30/HDC1080)" }]
   - [
       "sensor.isActive",
       "b",
@@ -42,7 +43,7 @@ config_schema:
   - [
       "sensor.topicroot",
       "s",
-      "kingswood/bedroom",
+      "mongoose/test",
       { title: "Sensor MQTT topic root" },
     ]
   - [
@@ -61,7 +62,9 @@ libs:
   - origin: https://github.com/mongoose-os-libs/wifi
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/provision
-  - origin: https://github.com/richardjlyon/arduino_closedcube_hdc1080.git
-    version: 1.0  
+  - origin: https://github.com/richardjlyon/arduino_closedcube_hdc1080
+    version: 1.0
+  - origin: https://github.com/richardjlyon/arduino_sparkfun_scd30
+    version: 1.0
 
 manifest_version: 2017-09-29
