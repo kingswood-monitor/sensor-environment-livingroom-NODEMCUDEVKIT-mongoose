@@ -31,13 +31,9 @@
 #include "mgos_mqtt.h"
 #include "mgos_gpio.h"
 #include "mgos_provision.h"
-#include "mgos_arduino_closedcube_hdc1080.h"
-#include "mgos_arduino_sparkfun_scd30.h"
-#include "sensor.h"
 
-// The sensor
-ClosedCube_HDC1080 *hdc1080 = mgos_HDC1080_create();
-Sensor sensor = Sensor();
+#include "mgos_arduino_sparkfun_scd30.h"
+#include "mgos_arduino_closedcube_hdc1080.h"
 
 // Red  Onboard LED next to USB port, used to signal data transmission
 #define LED_RED 16
@@ -52,16 +48,18 @@ std::string humidity_topic;
 std::string status_topic;
 std::string co2_topic;
 
+Sensor *sensor;
+
 // Main loop timer callback
 static void
 timer_cb(void *)
 {
   // If connected to network, convert readings to string and publish to MQTT
-  if (sensor.isAvailable() && mgos_sys_config_get_sensor_isActive())
+  if (sensor->isAvailable() && mgos_sys_config_get_sensor_isActive())
   {
-    double temp_c = sensor.readTemperature();
-    double humidity = sensor.readHumidity();
-    int co2 = sensor.readCO2();
+    double temp_c = sensor->readTemperature();
+    double humidity = sensor->readHumidity();
+    int co2 = sensor->readCO2();
 
     // Publish readings to MQTT
     char buffer[50];
@@ -87,11 +85,6 @@ timer_cb(void *)
 
 enum mgos_app_init_result mgos_app_init(void)
 {
-  // Virtual sensor code
-  sensor.setType("SCD30");
-
-  // Initialise the sensor
-  mgos_HDC1080_begin(hdc1080);
 
   // Set up the red onboard LED to signal MQTT transfer
   mgos_gpio_set_mode(LED_RED, MGOS_GPIO_MODE_OUTPUT);
