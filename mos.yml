@@ -2,7 +2,7 @@ author: Richard Lyon <richardlyon@fastmail.com>
 description: Send HDC1080 readings by MQTT
 version: 1.0
 
-name: DHC1080_READER
+name: KINGSWOOD_ENVIRONMENT_SENSOR
 
 libs_version: ${mos.version}
 modules_version: ${mos.version}
