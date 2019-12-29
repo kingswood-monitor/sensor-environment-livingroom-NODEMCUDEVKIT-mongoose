@@ -34,6 +34,9 @@
 #include "mgos_provision.h"
 #include "mgos_arduino_closedcube_hdc1080.h"
 
+// The sensor
+ClosedCube_HDC1080 *hdc1080 = mgos_HDC1080_create();
+
 // Red  Onboard LED next to USB port, used to signal data transmission
 #define LED_RED 16
 
@@ -45,9 +48,6 @@ std::string topic_root;
 std::string temp_topic;
 std::string humidity_topic;
 std::string status_topic;
-
-// The sensor
-ClosedCube_HDC1080 *hdc1080 = mgos_HDC1080_create();
 
 // Main loop timer callback
 static void
