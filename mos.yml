@@ -1,0 +1,87 @@
+author: Richard Lyon <richardlyon@fastmail.com>
+description: Send HDC1080 readings by MQTT
+version: 1.0
+
+name: DHC1080_READER
+
+libs_version: ${mos.version}
+modules_version: ${mos.version}
+mongoose_os_version: ${mos.version}
+
+# Optional. List of tags for online search.
+tags:
+  - c
+  - HDC1080
+
+# List of files / directories with C sources. No slashes at the end of dir names.
+sources:
+  - src
+
+# List of dirs. Files from these dirs will be copied to the device filesystem
+filesystem:
+  - fs
+
+config_schema:
+  - ["wifi.sta.enable", true]
+  - ["wifi.ap.enable", false]
+  - ["wifi.sta.ssid", "Kingswood"]
+  - ["wifi.sta.pass", "wbtc0rar"]
+  - ["mqtt.enable", true]
+  - ["mqtt.server", 192.168.1.200:1883]
+  - ["mqtt.will_message", "OFFLINE"]
+  - ["mqtt.will_topic", "status"] # updated programmatically with topic root
+  - ["mqtt.will_retain", true]
+  - ["provision.led.pin", 2]
+  - ["i2c.enable", true]
+  - ["i2c.scl_gpio", "i", 5, { title: "scl" }]
+  - ["i2c.sda_gpio", "i", 4, { title: "sda" }]
+  - ["sensor", "o", { title: "Sensor custom settings" }]
+  - [
+      "sensor.isActive",
+      "b",
+      true,
+      { title: "MQTT broadcast disabled if set false" },
+    ]
+  - [
+      "sensor.topicroot",
+      "s",
+      "kingswood/bedroom",
+      { title: "Sensor MQTT topic root" },
+    ]
+  - [
+      "sensor.interval",
+      "i",
+      3000,
+      { title: "Data refresh period (milliseconds" },
+    ]
+
+# These settings get compiled into the C structure, and can be accessed
+# from the C code this way:
+#
+# printf("Hello from %s!\n", mgos_sys_config_get_device_id());
+#
+# Settings are cool: can be modified remotely without full firmware upgrade!
+#
+# To see all available compiled settings, buid the firmware and open
+# build/gen/mgos_config.h file.
+#
+# Also, in this config_schema section, you can override existing
+# settings that has been created by other libraries. For example, debug log
+# level is 2 by default. For this firmware we can override it to 3:
+#
+# config_schema:
+#  - ["debug.level", 3]
+
+libs:
+  - origin: https://github.com/mongoose-os-libs/boards
+  - origin: https://github.com/mongoose-os-libs/ca-bundle
+  - origin: https://github.com/mongoose-os-libs/rpc-service-config
+  - origin: https://github.com/mongoose-os-libs/rpc-service-fs
+  - origin: https://github.com/mongoose-os-libs/rpc-uart
+  - origin: https://github.com/mongoose-os-libs/wifi
+  - origin: https://github.com/mongoose-os-libs/mqtt
+  - origin: https://github.com/mongoose-os-libs/provision
+  - origin: https://github.com/richardjlyon/arduino_closedcube_hdc1080.git
+
+# Used by the mos tool to catch mos binaries incompatible with this file format
+manifest_version: 2017-09-29
