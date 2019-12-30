@@ -11,9 +11,9 @@
  * Flashing red LED - MQTT server  connected, data transmitted
  * 
  * TODO:
- *  - Build generic sensor driver
  *  - Add NeoPixel support
  *  - Build Blinkt app
+ *  - Write native I2C HDC1080 / SCD30 libraries
  * 
  * DONE:
  *  - Publish on MQTT
@@ -23,6 +23,7 @@
  *  - Parameterise MQTT topic
  *  - Integrate with Node-Red code (inc. MQTT status / wil)
  *  - Convert SCD30 driver
+ *  - Build generic sensor driver
  * 
  */
 #include <string>
