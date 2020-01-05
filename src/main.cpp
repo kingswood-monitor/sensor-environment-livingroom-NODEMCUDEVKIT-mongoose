@@ -1,5 +1,5 @@
 /*
- * environment-sensor-livingroom-mongoose
+ * sensor-environment-livingroom-mongoose
  * 
  * Kingswood Environment Sensor Firmware
  * Mongoose OS
