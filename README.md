@@ -1,7 +1,3 @@
-# A blank Mongoose OS app
+# Kingswood monitor livingroom environment sensor
 
-## Overview
-
-This is an empty app, serves as a skeleton for building Mongoose OS
-apps from scratch.
-
+ESP8266 / Mongoose OS.
