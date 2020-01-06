@@ -81,12 +81,11 @@ static void timer_cb(void *)
   if (!sensor->isAvailable()) return;
 
   std::string temp = sensor->temperatureString();
-  mgos_mqtt_pub(temp_topic.c_str(), temp.c_str(), temp.size(), 1, 0);
-  
   std::string humidity = sensor->humidityString();
-  mgos_mqtt_pub(humidity_topic.c_str(), humidity.c_str(), humidity.size(), 1, 0);
-  
   std::string co2 = sensor->co2String();
+  
+  mgos_mqtt_pub(temp_topic.c_str(), temp.c_str(), temp.size(), 1, 0);
+  mgos_mqtt_pub(humidity_topic.c_str(), humidity.c_str(), humidity.size(), 1, 0);
   mgos_mqtt_pub(co2_topic.c_str(), co2.c_str(), co2.size(), 1, 0);
 
   LOG(LL_INFO, ("T: %s, H: %s, CO2: %s", temp.c_str(), humidity.c_str(), co2.c_str()));
