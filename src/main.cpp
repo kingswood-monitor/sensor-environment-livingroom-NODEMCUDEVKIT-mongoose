@@ -53,6 +53,8 @@
 #include "mgos_arduino_sparkfun_scd30.h"
 #include "mgos_arduino_closedcube_hdc1080.h"
 
+#include "sensor-utils.h"
+
 // Red  Onboard LED next to USB port, used to signal data transmission
 #define LED_RED 16
 
@@ -95,6 +97,15 @@ static void timer_cb(void *)
 
 enum mgos_app_init_result mgos_app_init(void)
 {
+  const char *firmware_title = mgos_sys_config_get_device_firmware_title();
+  const char *firmware_version = mgos_sys_config_get_device_firmware_version();
+  const char *device_os = mgos_sys_config_get_device_os();
+  const char *firmware_filename = mgos_sys_config_get_device_firmware_filename();
+  const char *json_version = mgos_sys_config_get_json_protocol_version();
+  const char *device_id = mgos_sys_config_get_device_id(); // TODO FIXME get actual device id
+
+  utils::printBanner(firmware_title, firmware_version, device_os, firmware_filename, json_version, device_id);
+
   // Create sensor from configuration
   // sensor = mgos_HDC1080_create();
   int refresh_secs = mgos_sys_config_get_sensor_scd30_refreshIntervalSecs();
