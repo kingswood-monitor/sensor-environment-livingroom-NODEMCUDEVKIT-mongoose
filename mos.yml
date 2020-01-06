@@ -32,19 +32,35 @@ config_schema:
   - ["i2c.enable", true]
   - ["i2c.scl_gpio", "i", 5, { title: "scl" }]
   - ["i2c.sda_gpio", "i", 4, { title: "sda" }]
-  - ["sensor", "o", { title: "Sensor custom settings" }]
-  - ["sensor.type", "s", "SCD30", { title: "Sensor type (SCD30/HDC1080)" }]
+  - ["json", "o", { title: "JSON data " }]
+  - ["json.protocol", "1.0"]
+  - ["device.id", "001"]
+  - ["device.type", "ESP8266"]
+  - ["device.location", "s", "livingroom", { title: "Sensor MQTT topic root" }]
+  - ["device.firmware", "1.4"]
+  - ["device.os", "mongoose"]
   - [
-      "sensor.isActive",
+      "device.battery.active",
       "b",
       true,
-      { title: "MQTT broadcast disabled if set false" },
+      { title: "True if the device is on battery power" },
     ]
-  - ["sensor.location", "s", "livingroom", { title: "Sensor MQTT topic root" }]
   - [
       "sensor.interval",
       "i",
       3000,
+      { title: "Data refresh period (milliseconds" },
+    ]
+  - [
+      "sensor.scd30.refreshIntervalSecs",
+      "i",
+      3,
+      { title: "Data refresh period (milliseconds" },
+    ]
+  - [
+      "sensor.scd30.defaultAmbientPressureMbar",
+      "i",
+      1023,
       { title: "Data refresh period (milliseconds" },
     ]
 
@@ -57,6 +73,7 @@ libs:
   - origin: https://github.com/mongoose-os-libs/wifi
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/provision
+
   - origin: https://github.com/richardjlyon/arduino_closedcube_hdc1080
   - origin: https://github.com/richardjlyon/arduino_sparkfun_scd30
 
