@@ -33,12 +33,25 @@ config_schema:
   - ["i2c.scl_gpio", "i", 5, { title: "scl" }]
   - ["i2c.sda_gpio", "i", 4, { title: "sda" }]
   - ["json", "o", { title: "JSON data " }]
-  - ["json.protocol", "1.0"]
+  - ["json.protocol_version", "s", "1.0", { title: "JSON protocol version" }]
   - ["device.id", "001"]
   - ["device.type", "ESP8266"]
   - ["device.location", "s", "livingroom", { title: "Sensor MQTT topic root" }]
-  - ["device.firmware", "1.4"]
-  - ["device.os", "mongoose"]
+  - [
+      "device.firmware_title",
+      "s",
+      "Kingswood System Environment Sensor",
+      { title: "Device firmware title" },
+    ]
+  - ["device.firmware_version", "s", "1.4", { title: "Firmware version" }]
+  - [
+      "device.firmware_filename",
+      "s",
+      "sensor-environment-mongoose",
+      { title: "Firmware filename" },
+    ]
+
+  - ["device.os", "s", "Mongoose OS", { title: "Firmware operating system" }]
   - [
       "device.battery.active",
       "b",

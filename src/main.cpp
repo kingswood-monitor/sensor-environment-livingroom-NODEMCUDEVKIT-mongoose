@@ -67,6 +67,7 @@ std::string temp_topic;
 std::string humidity_topic;
 std::string status_topic;
 std::string co2_topic;
+  // FIXME Add other measures
 std::string message_topic;
 
 Sensor *sensor;
@@ -117,10 +118,12 @@ enum mgos_app_init_result mgos_app_init(void)
 
   // Build the MQTT topic strings
   topic_root = std::string(mgos_sys_config_get_device_location());
-  temp_topic = topic_root + "/sensors/scd30/temp";
-  humidity_topic = topic_root + "/sensors/scd30/humidity";
-  co2_topic = topic_root + "/sensors/scd30/co2";
+  temp_topic = topic_root + "/measurement/temperature";
+  humidity_topic = topic_root + "/measurement/humidity";
+  co2_topic = topic_root + "/measurement/co2";
+  // FIXME Add other measures
   message_topic = topic_root + "/status/message";
+  status_topic = topic_root + "/status";
 
   // Set the MQTT will topic
   mgos_sys_config_set_mqtt_will_topic(status_topic.c_str());
