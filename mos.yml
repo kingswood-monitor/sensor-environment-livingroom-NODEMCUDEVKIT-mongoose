@@ -40,12 +40,7 @@ config_schema:
       true,
       { title: "MQTT broadcast disabled if set false" },
     ]
-  - [
-      "sensor.topicroot",
-      "s",
-      "mongoose/test",
-      { title: "Sensor MQTT topic root" },
-    ]
+  - ["sensor.location", "s", "livingroom", { title: "Sensor MQTT topic root" }]
   - [
       "sensor.interval",
       "i",

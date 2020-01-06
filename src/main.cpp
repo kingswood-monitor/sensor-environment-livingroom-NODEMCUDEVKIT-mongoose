@@ -41,47 +41,31 @@ std::string co2_topic;
 Sensor *sensor;
 bool hasCO2;
 
-// Main loop timer callback
-static void
-timer_cb(void *)
+/**
+ * Publish temperature, humidity, and CO2 
+ * on a timer if active.
+ */
+static void timer_cb(void *)
 {
-  // If connected to network, convert readings to string and publish to MQTT
-  if (sensor->isAvailable() && mgos_sys_config_get_sensor_isActive())
+  if (!sensor->isAvailable() || !mgos_sys_config_get_sensor_isActive()) return;
+
+  std::string temp = sensor->temperatureString();
+  mgos_mqtt_pub(temp_topic.c_str(), temp.c_str(), temp.size(), 1, 0);
+  
+  std::string humidity = sensor->humidityString();
+  mgos_mqtt_pub(humidity_topic.c_str(), humidity.c_str(), humidity.size(), 1, 0);
+  
+  if (hasCO2)
   {
-    double temp_c = sensor->readTemperature();
-    double humidity = sensor->readHumidity();
-    int co2 = sensor->readCO2();
-
-    // Publish readings to MQTT
-    char buffer[50];
-    int len;
-    // temperature
-    len = snprintf(buffer, 50, "%f", temp_c);
-    mgos_mqtt_pub(temp_topic.c_str(), buffer, len, 1, 0);
-    // humdity
-    len = snprintf(buffer, 50, "%f", humidity);
-    mgos_mqtt_pub(humidity_topic.c_str(), buffer, len, 1, 0);
-    // co2
-    if (hasCO2)
-    {
-      len = snprintf(buffer, 50, "%i", co2);
-      mgos_mqtt_pub(co2_topic.c_str(), buffer, len, 1, 0);
-    }
-
-    // Publish state to MQTT
-    mgos_mqtt_pub(status_topic.c_str(), "ONLINE", 6, 1, 0);
-
-    // Log and blink
-    if (hasCO2)
-    {
-      LOG(LL_INFO, ("T: %.2f, H: %.2f, CO2: %i", temp_c, humidity, co2));
-    }
-    else
-    {
-      LOG(LL_INFO, ("T: %.2f, H: %.2f", temp_c, humidity));
-    }
-    mgos_gpio_blink(LED_RED, update_millis - 50, 50);
+    std::string co2 = sensor->co2String();
+    mgos_mqtt_pub(co2_topic.c_str(), co2.c_str(), co2.size(), 1, 0);
+    LOG(LL_INFO, ("T: %s, H: %s, CO2: %s", temp.c_str(), humidity.c_str(), co2.c_str()));
+  } else {
+    LOG(LL_INFO, ("T: %s, H: %s", temp.c_str(), humidity.c_str()));
   }
+
+  mgos_mqtt_pub(status_topic.c_str(), "ONLINE", 6, 1, 0);
+  mgos_gpio_blink(LED_RED, update_millis - 50, 50);
 }
 
 enum mgos_app_init_result mgos_app_init(void)
@@ -105,6 +89,7 @@ enum mgos_app_init_result mgos_app_init(void)
   else
   {
     LOG(LL_ERROR, ("Couldn't initialise sensor with name %s, check configuration.", sensor_name.c_str()));
+    return MGOS_APP_INIT_ERROR;
   }
 
   // Set up the red onboard LED to signal MQTT transfer
@@ -112,7 +97,7 @@ enum mgos_app_init_result mgos_app_init(void)
   mgos_gpio_write(LED_RED, true); // true is off for onboard LED
 
   // Build the MQTT topic strings
-  topic_root = std::string(mgos_sys_config_get_sensor_topicroot());
+  topic_root = std::string(mgos_sys_config_get_sensor_location()) + "/sensors/" + sensor_name;
   temp_topic = topic_root + "/temp";
   humidity_topic = topic_root + "/humidity";
   status_topic = topic_root + "/status";
