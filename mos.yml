@@ -42,7 +42,7 @@ config_schema:
       "Kingswood System Environment Sensor",
       { title: "Device firmware title" },
     ]
-  - ["device.firmware_version", "s", "1.4", { title: "Firmware version" }]
+  - ["device.firmware_version", "s", "1.5", { title: "Firmware version" }]
   - [
       "device.firmware_filename",
       "s",
