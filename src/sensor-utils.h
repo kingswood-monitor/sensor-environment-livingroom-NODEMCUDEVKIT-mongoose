@@ -5,7 +5,6 @@ namespace utils
 /** Configuration file: 
  * 
  *  device
- *      id
  *      firmware_title
  *      firmware_version
  *      firmware_filename
