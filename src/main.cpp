@@ -1,4 +1,5 @@
 /*
+ * Livingroom Enviromnent Sensor firmware
  * sensor-environment-livingroom-mongoose
  * 
  * Kingswood Environment Sensor Firmware
@@ -12,20 +13,6 @@
  * Solid blue LED - WiFi connected
  * Flashing red LED - MQTT server  connected, data transmitted
  * 
- * TODO:
- *  - Add NeoPixel support
- *  - Build Blinkt app
- *  - Write native I2C HDC1080 / SCD30 libraries
- * 
- * DONE:
- *  - Publish on MQTT
- *  - Flash blue LED on WIFI connect
- *  - FLash red LED on data send
- *  - Convert to HDC1080 sensor
- *  - Parameterise MQTT topic
- *  - Integrate with Node-Red code (inc. MQTT status / wil)
- *  - Convert SCD30 driver
- *  - Build generic sensor driver
  * 
  */
 #include <string>
