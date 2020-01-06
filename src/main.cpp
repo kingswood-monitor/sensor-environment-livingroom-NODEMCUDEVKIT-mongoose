@@ -49,7 +49,6 @@
 #include "mgos_mqtt.h"
 #include "mgos_gpio.h"
 #include "mgos_provision.h"
-
 #include "mgos_arduino_sparkfun_scd30.h"
 #include "mgos_arduino_closedcube_hdc1080.h"
 
@@ -62,13 +61,35 @@
 int update_millis;
 
 // MQTT topic strings
-std::string topic_root;
-std::string temp_topic;
-std::string humidity_topic;
-std::string status_topic;
-std::string co2_topic;
-  // FIXME Add other measures
-std::string message_topic;
+std::string root_tp;
+std::string packetid_tp;
+std::string protocol_tp;
+
+std::string device_id_tp;
+std::string device_type_tp;
+std::string device_location_tp;
+std::string device_firmware_tp;
+std::string device_os_tp;
+std::string device_battery_active_tp;
+std::string device_battery_voltage_tp;
+
+std::string measurement_temperature_tp;
+std::string measurement_humidity_tp;
+std::string measurement_co2_tp;
+std::string measurement_lux_tp;
+std::string measurement_mbars_tp;
+
+std::string status_message_tp;
+std::string status_description_tp;
+
+//MQTT values
+const char *device_id;
+const char *device_type;
+const char *device_location;
+const char *device_firmware;
+const char *device_os;
+const char *device_battery_active;
+const char *device_battery_voltage;
 
 Sensor *sensor;
 bool hasCO2;
@@ -79,19 +100,26 @@ bool hasCO2;
  */
 static void timer_cb(void *)
 {
-  if (!sensor->isAvailable()) return;
+  if (!sensor->isAvailable())
+    return;
 
   std::string temp = sensor->temperatureString();
   std::string humidity = sensor->humidityString();
   std::string co2 = sensor->co2String();
-  
-  mgos_mqtt_pub(temp_topic.c_str(), temp.c_str(), temp.size(), 1, 0);
-  mgos_mqtt_pub(humidity_topic.c_str(), humidity.c_str(), humidity.size(), 1, 0);
-  mgos_mqtt_pub(co2_topic.c_str(), co2.c_str(), co2.size(), 1, 0);
+
+  mgos_mqtt_pub(device_id_tp.c_str(), device_id, strlen(device_id), 1, 0);
+  mgos_mqtt_pub(device_type_tp.c_str(), device_type, strlen(device_type), 1, 0);
+  mgos_mqtt_pub(device_location_tp.c_str(), device_location, strlen(device_location), 1, 0);
+  mgos_mqtt_pub(device_firmware_tp.c_str(), device_firmware, strlen(device_firmware), 1, 0);
+  mgos_mqtt_pub(device_os_tp.c_str(), device_os, strlen(device_os), 1, 0);
+
+  mgos_mqtt_pub(measurement_temperature_tp.c_str(), temp.c_str(), temp.size(), 1, 0);
+  mgos_mqtt_pub(measurement_humidity_tp.c_str(), humidity.c_str(), humidity.size(), 1, 0);
+  mgos_mqtt_pub(measurement_co2_tp.c_str(), co2.c_str(), co2.size(), 1, 0);
+
+  mgos_mqtt_pub(status_message_tp.c_str(), "ONLINE", 6, 1, 0);
 
   LOG(LL_INFO, ("T: %s, H: %s, CO2: %s", temp.c_str(), humidity.c_str(), co2.c_str()));
-
-  mgos_mqtt_pub(status_topic.c_str(), "ONLINE", 6, 1, 0);
   mgos_gpio_blink(LED_RED, update_millis - 50, 50);
 }
 
@@ -105,22 +133,45 @@ enum mgos_app_init_result mgos_app_init(void)
   int refresh_secs = mgos_sys_config_get_sensor_scd30_refreshIntervalSecs();
   int pressure_mbars = mgos_sys_config_get_sensor_scd30_defaultAmbientPressureMbar();
   sensor = mgos_SCD30_create(refresh_secs, pressure_mbars);
-  
+
   // Set up the red onboard LED to signal MQTT transfer
   mgos_gpio_set_mode(LED_RED, MGOS_GPIO_MODE_OUTPUT);
   mgos_gpio_write(LED_RED, true); // true is off for onboard LED
 
   // Build the MQTT topic strings
-  topic_root = std::string(mgos_sys_config_get_device_location());
-  temp_topic = topic_root + "/measurement/temperature";
-  humidity_topic = topic_root + "/measurement/humidity";
-  co2_topic = topic_root + "/measurement/co2";
-  // FIXME Add other measures
-  message_topic = topic_root + "/status/message";
-  status_topic = topic_root + "/status";
+  root_tp = std::string(mgos_sys_config_get_device_location());
+
+  packetid_tp = root_tp + "/packetID";
+  protocol_tp = root_tp + "/protocol";
+
+  device_id_tp = root_tp + "/device/id";
+  device_type_tp = root_tp + "/device/type";
+  device_location_tp = root_tp + "/device/location";
+  device_firmware_tp = root_tp + "/device/firmware";
+  device_os_tp = root_tp + "/device/os";
+  device_battery_active_tp = root_tp + "/device/battery/active";
+  device_battery_voltage_tp = root_tp + "/device/battery/voltage";
+
+  measurement_temperature_tp = root_tp + "/measurement/temperature";
+  measurement_humidity_tp = root_tp + "/measurement/humidity";
+  measurement_co2_tp = root_tp + "/measurement/co2";
+  measurement_lux_tp = root_tp + "/measurement/lux";
+  measurement_mbars_tp = root_tp + "/measurement/mbars";
+
+  status_message_tp = root_tp + "/status/message";
+  status_description_tp = root_tp + "/status/description";
 
   // Set the MQTT will topic
-  mgos_sys_config_set_mqtt_will_topic(status_topic.c_str());
+  mgos_sys_config_set_mqtt_will_topic(status_message_tp.c_str());
+
+  // MQTT values
+  device_id = mgos_sys_config_get_device_id();
+  device_type = mgos_sys_config_get_device_type();
+  device_location = mgos_sys_config_get_device_location();
+  device_firmware = mgos_sys_config_get_device_firmware_filename();
+  device_os = mgos_sys_config_get_device_os();
+  device_battery_active = NULL;
+  device_battery_voltage = NULL;
 
   // Start a simple repeating timer to scan data
   update_millis = mgos_sys_config_get_sensor_interval();
