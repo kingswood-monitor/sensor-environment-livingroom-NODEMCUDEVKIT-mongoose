@@ -34,8 +34,7 @@ config_schema:
   - ["i2c.sda_gpio", "i", 4, { title: "sda" }]
   - ["json", "o", { title: "JSON data " }]
   - ["json.protocol_version", "s", "1.0", { title: "JSON protocol version" }]
-  # - ["device.id", "001"]
-  - ["device.type", "ESP8266"]
+  - ["device.type", "s", "ESP8266", { title: "MCU typye" }]
   - ["device.location", "s", "livingroom", { title: "Sensor MQTT topic root" }]
   - [
       "device.firmware_title",
