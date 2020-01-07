@@ -19,38 +19,51 @@ filesystem:
   - fs
 
 config_schema:
+  - [uart.baud_rate", 115200]
+
   - ["wifi.sta.enable", true]
   - ["wifi.ap.enable", false]
   - ["wifi.sta.ssid", "Kingswood"]
   - ["wifi.sta.pass", "wbtc0rar"]
+
   - ["mqtt.enable", true]
   - ["mqtt.server", 192.168.1.200:1883]
   - ["mqtt.will_message", "OFFLINE"]
   - ["mqtt.will_topic", "status"] # updated programmatically with topic root
   - ["mqtt.will_retain", true]
+  - ["mqtt.topic_root", "s", "livingroom", { title: "MQTT topic root" }] # SET THIS TO DEVICE LOCATION
+
   - ["provision.led.pin", 2]
+
   - ["i2c.enable", true]
   - ["i2c.scl_gpio", "i", 5, { title: "scl" }]
   - ["i2c.sda_gpio", "i", 4, { title: "sda" }]
+
   - ["json", "o", { title: "JSON data " }]
   - ["json.protocol_version", "s", "1.0", { title: "JSON protocol version" }]
-  - ["device.type", "s", "ESP8266", { title: "MCU typye" }]
-  - ["device.location", "s", "livingroom", { title: "Sensor MQTT topic root" }]
+
+  - ["device.type", "s", "NODEMCUDEVKIT", { title: "MCU typye" }]
+
+  - ["device.location", "s", "Living Room", { title: "Location of device" }]
   - [
-      "device.firmware_title",
+      "device.firmware.name",
       "s",
-      "Kingswood System Environment Sensor",
-      { title: "Device firmware title" },
+      "Environment Sensor",
+      { title: "Firmware name" },
     ]
-  - ["device.firmware_version", "s", "1.5", { title: "Firmware version" }]
+  - ["device.firmware.version", "s", "0.2", { title: "Firmware version" }]
   - [
-      "device.firmware_filename",
+      "device.firmware.slug",
       "s",
       "sensor-environment-livingroom-NODEMCUDEVKIT-mongoose",
-      { title: "Firmware filename" },
+      { title: "Device firmware slug" },
     ]
-
-  - ["device.os", "s", "Mongoose OS", { title: "Firmware operating system" }]
+  - [
+      "device.firmware.os",
+      "s",
+      "mongoose",
+      { title: "Firmware operating system" },
+    ]
   - [
       "device.battery.active",
       "b",
