@@ -13,16 +13,18 @@
  * Solid blue LED - WiFi connected
  * Flashing red LED - MQTT server  connected, data transmitted
  * 
- *  JSON V1.0
- 
+ *  Format
+ *  ------------------------------------------------------------
     packetID = 1234
     protocol n = 1.1
+
     device
       ID = ESP8266-001
       type = ESP8266
-      location = livingroom
-      firmware n = 1.1 
-      os = mongoose
+      firmware
+        version n = 0.2
+        slug = sensor-environment-outside-32U4RFM95LORA-arduino
+        os = mongoose
       battery
         active b = true
         voltage n = 3.8
@@ -30,17 +32,18 @@
         RSSI n = -98
         SNR n = 23
         frequencyError n = 12234
-    sensors
-      SHT15
-        temperature n = 21.1
-        humidity n = 87
-      BH1750
-        lux n = 600
-      BMP388
-        mbars n = 1023
+
+    measurement
+      temperature n = 21.1
+      humidity n = 87
+      co2 = 567
+      lux n = 600
+      mbars n = 1023
+        
     status 
       message = OK
       description = All's well
+    ---------------------------------------------------------------
  * 
  */
 #include <string>
@@ -107,15 +110,15 @@ static void timer_cb(void *)
   std::string humidity = sensor->humidityString();
   std::string co2 = sensor->co2String();
 
-  mgos_mqtt_pub(device_id_tp.c_str(), device_id, strlen(device_id), 1, 0);
-  mgos_mqtt_pub(device_type_tp.c_str(), device_type, strlen(device_type), 1, 0);
-  mgos_mqtt_pub(device_location_tp.c_str(), device_location, strlen(device_location), 1, 0);
-  mgos_mqtt_pub(device_firmware_tp.c_str(), device_firmware, strlen(device_firmware), 1, 0);
-  mgos_mqtt_pub(device_os_tp.c_str(), device_os, strlen(device_os), 1, 0);
+  // mgos_mqtt_pub(device_id_tp.c_str(), device_id, strlen(device_id), 1, 0);
+  // mgos_mqtt_pub(device_type_tp.c_str(), device_type, strlen(device_type), 1, 0);
+  // mgos_mqtt_pub(device_location_tp.c_str(), device_location, strlen(device_location), 1, 0);
+  // mgos_mqtt_pub(device_firmware_tp.c_str(), device_firmware, strlen(device_firmware), 1, 0);
+  // mgos_mqtt_pub(device_os_tp.c_str(), device_os, strlen(device_os), 1, 0);
 
-  mgos_mqtt_pub(measurement_temperature_tp.c_str(), temp.c_str(), temp.size(), 1, 0);
-  mgos_mqtt_pub(measurement_humidity_tp.c_str(), humidity.c_str(), humidity.size(), 1, 0);
-  mgos_mqtt_pub(measurement_co2_tp.c_str(), co2.c_str(), co2.size(), 1, 0);
+  // mgos_mqtt_pub(measurement_temperature_tp.c_str(), temp.c_str(), temp.size(), 1, 0);
+  // mgos_mqtt_pub(measurement_humidity_tp.c_str(), humidity.c_str(), humidity.size(), 1, 0);
+  // mgos_mqtt_pub(measurement_co2_tp.c_str(), co2.c_str(), co2.size(), 1, 0);
 
   mgos_mqtt_pub(status_message_tp.c_str(), "ONLINE", 6, 1, 0);
 
@@ -139,7 +142,7 @@ enum mgos_app_init_result mgos_app_init(void)
   mgos_gpio_write(LED_RED, true); // true is off for onboard LED
 
   // Build the MQTT topic strings
-  root_tp = std::string(mgos_sys_config_get_device_location());
+  root_tp = std::string(mgos_sys_config_get_mqtt_topic_root());
 
   packetid_tp = root_tp + "/packetID";
   protocol_tp = root_tp + "/protocol";
@@ -147,7 +150,7 @@ enum mgos_app_init_result mgos_app_init(void)
   device_id_tp = root_tp + "/device/id";
   device_type_tp = root_tp + "/device/type";
   device_location_tp = root_tp + "/device/location";
-  device_firmware_tp = root_tp + "/device/firmware";
+  // device_firmware_tp = root_tp + "/device/firmware";
   device_os_tp = root_tp + "/device/os";
   device_battery_active_tp = root_tp + "/device/battery/active";
   device_battery_voltage_tp = root_tp + "/device/battery/voltage";
@@ -165,13 +168,13 @@ enum mgos_app_init_result mgos_app_init(void)
   mgos_sys_config_set_mqtt_will_topic(status_message_tp.c_str());
 
   // MQTT values
-  device_id = mgos_sys_config_get_device_id();
-  device_type = mgos_sys_config_get_device_type();
-  device_location = mgos_sys_config_get_device_location();
-  device_firmware = mgos_sys_config_get_device_firmware_filename();
-  device_os = mgos_sys_config_get_device_os();
-  device_battery_active = NULL;
-  device_battery_voltage = NULL;
+  // device_id = mgos_sys_config_get_device_id();
+  // device_type = mgos_sys_config_get_device_type();
+  // device_location = mgos_sys_config_get_device_location();
+  // device_firmware = mgos_sys_config_get_device_firmware_filename();
+  // device_os = mgos_sys_config_get_device_os();
+  // device_battery_active = NULL;
+  // device_battery_voltage = NULL;
 
   // Start a simple repeating timer to scan data
   update_millis = mgos_sys_config_get_sensor_interval();
