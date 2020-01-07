@@ -46,7 +46,7 @@ config_schema:
   - [
       "device.firmware_filename",
       "s",
-      "sensor-environment-mongoose",
+      "sensor-environment-livingroom-NODEMCUDEVKIT-mongoose",
       { title: "Firmware filename" },
     ]
 
