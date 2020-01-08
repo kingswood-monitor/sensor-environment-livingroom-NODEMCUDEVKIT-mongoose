@@ -1,6 +1,6 @@
 author: Richard Lyon <richardlyon@fastmail.com>
 description: Send HDC1080 readings by MQTT
-version: 1.0
+version: 0.21
 
 name: KINGSWOOD_ENVIRONMENT_SENSOR
 
