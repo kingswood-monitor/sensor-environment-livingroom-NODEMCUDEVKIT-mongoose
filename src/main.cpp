@@ -49,9 +49,10 @@
 #include <string>
 #include "mgos.h"
 #include "mgos_wifi.h"
+#include "mgos_provision.h"
 #include "mgos_mqtt.h"
 #include "mgos_gpio.h"
-#include "mgos_provision.h"
+
 #include "mgos_arduino_sparkfun_scd30.h"
 #include "mgos_arduino_closedcube_hdc1080.h"
 

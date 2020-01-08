@@ -2,24 +2,27 @@ author: Richard Lyon <richardlyon@fastmail.com>
 description: Send HDC1080 readings by MQTT
 version: 0.21
 
-name: KINGSWOOD_ENVIRONMENT_SENSOR
-
-# libs_version: ${mos.version}
-# modules_version: ${mos.version}
-# mongoose_os_version: ${mos.version}
+name: Livingroom environment sensor
 
 tags:
   - c
   - HDC1080
+  - SCD30
 
 sources:
   - src
 
-filesystem:
-  - fs
-
 config_schema:
-  - [uart.baud_rate", 115200]
+  - ["uart.baud_rate", 115200]
+  - ["provision.led.pin", 2]
+
+  - ["dash.enable", true]
+  - ["dash.token", "91qXvM90ieNSi90RiMFyuG03g"]
+  - ["dash.server", "wss://mdash.net/api/v2/rpc"]
+
+  - ["i2c.enable", true]
+  - ["i2c.scl_gpio", "i", 5, { title: "scl" }]
+  - ["i2c.sda_gpio", "i", 4, { title: "sda" }]
 
   - ["wifi.sta.enable", true]
   - ["wifi.ap.enable", false]
@@ -29,61 +32,29 @@ config_schema:
   - ["mqtt.enable", true]
   - ["mqtt.server", 192.168.1.30:1883]
   - ["keep_alive", 60]
-  - ["mqtt.will_message", "OFFLINE"]
+  - ["mqtt.topic_root", "s", "livingroom", { title: "MQTT topic root" }] # SET THIS TO DEVICE LOCATION
+  - ["mqtt.will_message", "livingroom/OFFLINE"]
   - ["mqtt.will_topic", "status"] # updated programmatically with topic root
   - ["mqtt.will_retain", true]
-  - ["mqtt.topic_root", "s", "livingroom", { title: "MQTT topic root" }] # SET THIS TO DEVICE LOCATION
-
-  - ["provision.led.pin", 2]
-
-  - ["i2c.enable", true]
-  - ["i2c.scl_gpio", "i", 5, { title: "scl" }]
-  - ["i2c.sda_gpio", "i", 4, { title: "sda" }]
 
   - ["json", "o", { title: "JSON data " }]
   - ["json.protocol_version", "s", "1.0", { title: "JSON protocol version" }]
+
+  - ["sensor", "o", { title: "Sensor custom settings" }]
+  - ["sensor.interval", "i", 3000, { title: "Data refresh period (milliseconds)" }]
+  - ["sensor.scd30.refreshIntervalSecs", "i", 3, { title: "Data refresh period (milliseconds" }]
+  - ["sensor.scd30.defaultAmbientPressureMbar", "i", 1023, { title: "Data refresh period (milliseconds" }]
 
   - ["device.type", "s", "NODEMCUDEVKIT", { title: "MCU typye" }]
 
   - ["device.location", "s", "Living Room", { title: "Location of device" }]
   - ["device.firmware.name", "s", "Environment Sensor", { title: "Firmware name" },  ]
   - ["device.firmware.version", "s", "0.2", { title: "Firmware version" }]
-  - [
-    "device.firmware.slug",
-    "s",
-    "sensor-environment-livingroom-NODEMCUDEVKIT-mongoose",
-    { title: "Device firmware slug" },
-  ]
-  - [
-    "device.firmware.os",
-    "s",
-    "mongoose",
-    { title: "Firmware operating system" },
-  ]
-  - [
-    "device.battery.active",
-    "b",
-    true,
-    { title: "True if the device is on battery power" },
-  ]
-  - [
-    "sensor.interval",
-    "i",
-    3000,
-    { title: "Data refresh period (milliseconds" },
-  ]
-  - [
-    "sensor.scd30.refreshIntervalSecs",
-    "i",
-    3,
-    { title: "Data refresh period (milliseconds" },
-  ]
-  - [
-    "sensor.scd30.defaultAmbientPressureMbar",
-    "i",
-    1023,
-    { title: "Data refresh period (milliseconds" },
-  ]
+  - ["device.firmware.slug", "s", "sensor-environment-livingroom-NODEMCUDEVKIT-mongoose", { title: "Device firmware slug" }]
+  - ["device.firmware.os", "s", "mongoose", { title: "Firmware operating system" }]
+
+  - ["device.battery.active", "b", true, { title: "True if the device is on battery power" }]
+
 
 libs:
   - origin: https://github.com/mongoose-os-libs/boards
