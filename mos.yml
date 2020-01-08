@@ -27,7 +27,8 @@ config_schema:
   - ["wifi.sta.pass", "wbtc0rar"]
 
   - ["mqtt.enable", true]
-  - ["mqtt.server", 192.168.1.200:1883]
+  - ["mqtt.server", 192.168.1.30:1883]
+  - ["keep_alive", 60]
   - ["mqtt.will_message", "OFFLINE"]
   - ["mqtt.will_topic", "status"] # updated programmatically with topic root
   - ["mqtt.will_retain", true]
