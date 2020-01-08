@@ -110,15 +110,11 @@ static void timer_cb(void *)
   std::string humidity = sensor->humidityString();
   std::string co2 = sensor->co2String();
 
-  // mgos_mqtt_pub(device_id_tp.c_str(), device_id, strlen(device_id), 1, 0);
-  // mgos_mqtt_pub(device_type_tp.c_str(), device_type, strlen(device_type), 1, 0);
-  // mgos_mqtt_pub(device_location_tp.c_str(), device_location, strlen(device_location), 1, 0);
-  // mgos_mqtt_pub(device_firmware_tp.c_str(), device_firmware, strlen(device_firmware), 1, 0);
-  // mgos_mqtt_pub(device_os_tp.c_str(), device_os, strlen(device_os), 1, 0);
+    mgos_mqtt_pub(status_message_tp.c_str(), "ONLINE", 6, 1, 0);
 
-  // mgos_mqtt_pub(measurement_temperature_tp.c_str(), temp.c_str(), temp.size(), 1, 0);
-  // mgos_mqtt_pub(measurement_humidity_tp.c_str(), humidity.c_str(), humidity.size(), 1, 0);
-  // mgos_mqtt_pub(measurement_co2_tp.c_str(), co2.c_str(), co2.size(), 1, 0);
+    mgos_mqtt_pub(measurement_temperature_tp.c_str(), temp.c_str(), temp.size(), 1, 0);
+    mgos_mqtt_pub(measurement_humidity_tp.c_str(), humidity.c_str(), humidity.size(), 1, 0);
+    mgos_mqtt_pub(measurement_co2_tp.c_str(), co2.c_str(), co2.size(), 1, 0);
 
   mgos_mqtt_pub(status_message_tp.c_str(), "ONLINE", 6, 1, 0);
 
