@@ -101,14 +101,13 @@ bool hasCO2;
  * Publish temperature, humidity, and CO2 
  * on a timer if active.
  */
-static void timer_cb(void *)
-{
-  if (!sensor->isAvailable())
-    return;
+static void timer_cb(void *) {
+    if (!sensor->isAvailable())
+        return;
 
-  std::string temp = sensor->temperatureString();
-  std::string humidity = sensor->humidityString();
-  std::string co2 = sensor->co2String();
+    std::string temp = sensor->temperatureString();
+    std::string humidity = sensor->humidityString();
+    std::string co2 = sensor->co2String();
 
     mgos_mqtt_pub(status_message_tp.c_str(), "ONLINE", 6, 1, 0);
 
@@ -116,65 +115,59 @@ static void timer_cb(void *)
     mgos_mqtt_pub(measurement_humidity_tp.c_str(), humidity.c_str(), humidity.size(), 1, 0);
     mgos_mqtt_pub(measurement_co2_tp.c_str(), co2.c_str(), co2.size(), 1, 0);
 
-  mgos_mqtt_pub(status_message_tp.c_str(), "ONLINE", 6, 1, 0);
-
-  LOG(LL_INFO, ("T: %s, H: %s, CO2: %s", temp.c_str(), humidity.c_str(), co2.c_str()));
-  mgos_gpio_blink(LED_RED, update_millis - 50, 50);
+    LOG(LL_INFO, ("T: %s, H: %s, CO2: %s", temp.c_str(), humidity.c_str(), co2.c_str()));
+    mgos_gpio_blink(LED_RED, update_millis - 50, 50);
 }
 
-enum mgos_app_init_result mgos_app_init(void)
-{
+enum mgos_app_init_result mgos_app_init(void) {
 
-  utils::printBanner();
+    utils::printBanner();
 
-  // Create sensor from configuration
-  // sensor = mgos_HDC1080_create();
-  int refresh_secs = mgos_sys_config_get_sensor_scd30_refreshIntervalSecs();
-  int pressure_mbars = mgos_sys_config_get_sensor_scd30_defaultAmbientPressureMbar();
-  sensor = mgos_SCD30_create(refresh_secs, pressure_mbars);
+    // Create sensor from configuration
+    // sensor = mgos_HDC1080_create();
+    int refresh_secs = mgos_sys_config_get_sensor_scd30_refreshIntervalSecs();
+    int pressure_mbars = mgos_sys_config_get_sensor_scd30_defaultAmbientPressureMbar();
+    sensor = mgos_SCD30_create(refresh_secs, pressure_mbars);
 
-  // Set up the red onboard LED to signal MQTT transfer
-  mgos_gpio_set_mode(LED_RED, MGOS_GPIO_MODE_OUTPUT);
-  mgos_gpio_write(LED_RED, true); // true is off for onboard LED
+    // Set up the red onboard LED to signal MQTT transfer
+    mgos_gpio_set_mode(LED_RED, MGOS_GPIO_MODE_OUTPUT);
+    mgos_gpio_write(LED_RED, true); // true is off for onboard LED
 
-  // Build the MQTT topic strings
-  root_tp = std::string(mgos_sys_config_get_mqtt_topic_root());
+    // Build the MQTT topic strings
+    root_tp = std::string(mgos_sys_config_get_mqtt_topic_root());
 
-  packetid_tp = root_tp + "/packetID";
-  protocol_tp = root_tp + "/protocol";
+    packetid_tp = root_tp + "/packetID";
 
-  device_id_tp = root_tp + "/device/id";
-  device_type_tp = root_tp + "/device/type";
-  device_location_tp = root_tp + "/device/location";
-  // device_firmware_tp = root_tp + "/device/firmware";
-  device_os_tp = root_tp + "/device/os";
-  device_battery_active_tp = root_tp + "/device/battery/active";
-  device_battery_voltage_tp = root_tp + "/device/battery/voltage";
+    device_id_tp = root_tp + "/device/id";
+    device_type_tp = root_tp + "/device/type";
+    device_os_tp = root_tp + "/device/firmware/os";
+    device_battery_active_tp = root_tp + "/device/battery/active";
+    device_battery_voltage_tp = root_tp + "/device/battery/voltage";
 
-  measurement_temperature_tp = root_tp + "/measurement/temperature";
-  measurement_humidity_tp = root_tp + "/measurement/humidity";
-  measurement_co2_tp = root_tp + "/measurement/co2";
-  measurement_lux_tp = root_tp + "/measurement/lux";
-  measurement_mbars_tp = root_tp + "/measurement/mbars";
+    measurement_temperature_tp = root_tp + "/measurement/temperature";
+    measurement_humidity_tp = root_tp + "/measurement/humidity";
+    measurement_co2_tp = root_tp + "/measurement/co2";
+    measurement_lux_tp = root_tp + "/measurement/lux";
+    measurement_mbars_tp = root_tp + "/measurement/mbars";
 
-  status_message_tp = root_tp + "/status/message";
-  status_description_tp = root_tp + "/status/description";
+    status_message_tp = root_tp + "/status/message";
+    status_description_tp = root_tp + "/status/description";
 
-  // Set the MQTT will topic
-  mgos_sys_config_set_mqtt_will_topic(status_message_tp.c_str());
+    // Set the MQTT will topic
+    mgos_sys_config_set_mqtt_will_topic(status_message_tp.c_str());
 
-  // MQTT values
-  // device_id = mgos_sys_config_get_device_id();
-  // device_type = mgos_sys_config_get_device_type();
-  // device_location = mgos_sys_config_get_device_location();
-  // device_firmware = mgos_sys_config_get_device_firmware_filename();
-  // device_os = mgos_sys_config_get_device_os();
-  // device_battery_active = NULL;
-  // device_battery_voltage = NULL;
+    // MQTT values
+    device_id = mgos_sys_config_get_device_id();
+    device_type = mgos_sys_config_get_device_type();
+    device_location = mgos_sys_config_get_device_location();
+    device_firmware = mgos_sys_config_get_device_firmware_name();
+    device_os = mgos_sys_config_get_device_firmware_os();
+    device_battery_active = NULL;
+    device_battery_voltage = NULL;
 
-  // Start a simple repeating timer to scan data
-  update_millis = mgos_sys_config_get_sensor_interval();
-  mgos_set_timer(update_millis, true, timer_cb, NULL);
+    // Start a simple repeating timer to scan data
+    update_millis = mgos_sys_config_get_sensor_interval();
+    mgos_set_timer(update_millis, true, timer_cb, NULL);
 
-  return MGOS_APP_INIT_SUCCESS;
+    return MGOS_APP_INIT_SUCCESS;
 }

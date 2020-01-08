@@ -46,49 +46,44 @@ config_schema:
   - ["device.type", "s", "NODEMCUDEVKIT", { title: "MCU typye" }]
 
   - ["device.location", "s", "Living Room", { title: "Location of device" }]
-  - [
-      "device.firmware.name",
-      "s",
-      "Environment Sensor",
-      { title: "Firmware name" },
-    ]
+  - ["device.firmware.name", "s", "Environment Sensor", { title: "Firmware name" },  ]
   - ["device.firmware.version", "s", "0.2", { title: "Firmware version" }]
   - [
-      "device.firmware.slug",
-      "s",
-      "sensor-environment-livingroom-NODEMCUDEVKIT-mongoose",
-      { title: "Device firmware slug" },
-    ]
+    "device.firmware.slug",
+    "s",
+    "sensor-environment-livingroom-NODEMCUDEVKIT-mongoose",
+    { title: "Device firmware slug" },
+  ]
   - [
-      "device.firmware.os",
-      "s",
-      "mongoose",
-      { title: "Firmware operating system" },
-    ]
+    "device.firmware.os",
+    "s",
+    "mongoose",
+    { title: "Firmware operating system" },
+  ]
   - [
-      "device.battery.active",
-      "b",
-      true,
-      { title: "True if the device is on battery power" },
-    ]
+    "device.battery.active",
+    "b",
+    true,
+    { title: "True if the device is on battery power" },
+  ]
   - [
-      "sensor.interval",
-      "i",
-      3000,
-      { title: "Data refresh period (milliseconds" },
-    ]
+    "sensor.interval",
+    "i",
+    3000,
+    { title: "Data refresh period (milliseconds" },
+  ]
   - [
-      "sensor.scd30.refreshIntervalSecs",
-      "i",
-      3,
-      { title: "Data refresh period (milliseconds" },
-    ]
+    "sensor.scd30.refreshIntervalSecs",
+    "i",
+    3,
+    { title: "Data refresh period (milliseconds" },
+  ]
   - [
-      "sensor.scd30.defaultAmbientPressureMbar",
-      "i",
-      1023,
-      { title: "Data refresh period (milliseconds" },
-    ]
+    "sensor.scd30.defaultAmbientPressureMbar",
+    "i",
+    1023,
+    { title: "Data refresh period (milliseconds" },
+  ]
 
 libs:
   - origin: https://github.com/mongoose-os-libs/boards
