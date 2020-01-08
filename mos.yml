@@ -100,9 +100,11 @@ libs:
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/provision
 
-  - origin: https://github.com/richardjlyon/arduino_closedcube_hdc1080
-  - origin: https://github.com/richardjlyon/arduino_sparkfun_scd30
-  - origin: https://github.com/richardjlyon/lib-utilities-mongoose.git
+  - origin: https://github.com/kingswood-monitor/mgos_hdc1080
+    version: 1.3
+  - origin: https://github.com/kingswood-monitor/mgos_scd30
+    version: 1.3
+  - origin: https://github.com/kingswood-monitor/mgos_utilities
     version: 1.0
 
 manifest_version: 2017-09-29
